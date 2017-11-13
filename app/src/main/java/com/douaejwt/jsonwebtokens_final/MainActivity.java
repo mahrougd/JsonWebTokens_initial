@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // ETAPE 0
         Key key = MacProvider.generateKey();
 
         String compactJws = Jwts.builder()
@@ -41,49 +42,23 @@ public class MainActivity extends AppCompatActivity {
         TextView token = (TextView)findViewById(R.id.textView2);
         token.setText(msgTxt);
 
-        ///appelSynchrone();
-        appelAsynchrone();
+        // ETAPE 2
+        // appelSynchrone();
+
+        // ETAPE 3
+        // appelAsynchrone();
     }
 
-    private void appelSynchrone() {
+    // Code ETAPE 2
+    /*private void appelSynchrone() {
         new ListReposTask().execute("mahrougd");
-    }
-
-    private void appelAsynchrone() {
-        GithubAPI githubService = new RestAdapter.Builder()
-                .setEndpoint(GithubAPI.ENDPOINT)
-                .setLog(new AndroidLog("retrofit"))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build()
-                .create(GithubAPI.class);
-
-        githubService.listReposAsync("mahrougd", new Callback<List<Depot>>() {
-            @Override
-            public void success(List<Depot> depots, Response response) {
-                afficherDepot(depots);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    public void afficherDepot(List<Depot> depots) {
-        Toast.makeText(this, "nombre de dépots : " + depots.size(), Toast.LENGTH_SHORT).show();
-    }
-
-    public void notAllowed() {
-        Toast.makeText(this, "Impossible d'effectuer cette action", Toast.LENGTH_SHORT).show();
-    }
-
+    }*/
 
     class ListReposTask extends AsyncTask<String, Void, List<Depot>> {
 
         @Override
         protected List<Depot> doInBackground(String... params) {
-            GithubAPI githubService = new RestAdapter.Builder()
+            GithubAPI githubapi = new RestAdapter.Builder()
                     .setEndpoint(GithubAPI.ENDPOINT)
                     .setErrorHandler(new ErrorHandler() {
                         @Override
@@ -106,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     ).build().create(GithubAPI.class);
 
             String user = params[0];
-            List<Depot> repoList = githubService.listRepos(user);
+            List<Depot> repoList = githubapi.listRepos(user);
 
             return repoList;
         }
@@ -117,4 +92,37 @@ public class MainActivity extends AppCompatActivity {
             afficherDepot(repos);
         }
     }
+
+    /* Affichage */
+    public void afficherDepot(List<Depot> depots) {
+        Toast.makeText(this, "nombre de dépots : " + depots.size(), Toast.LENGTH_SHORT).show();
+    }
+
+    /* Exceptions*/
+    public void notAllowed() {
+        Toast.makeText(this, "Impossible d'effectuer cette action", Toast.LENGTH_SHORT).show();
+    }
+
+    // Code ETAPE 3
+
+    /* private void appelAsynchrone() {
+        GithubAPI githubapi = new RestAdapter.Builder()
+                .setEndpoint(GithubAPI.ENDPOINT)
+                .setLog(new AndroidLog("retrofit"))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build()
+                .create(GithubAPI.class);
+
+        githubapi.listReposAsync("mahrougd", new Callback<List<Depot>>() {
+            @Override
+            public void success(List<Depot> depots, Response response) {
+                afficherDepot(depots);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }*/
 }
